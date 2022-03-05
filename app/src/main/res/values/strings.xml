@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Post It</string>
+    <string name="write">What do you want to Talk about?</string>
+    <string name="post">post</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="sign_out_title">Confirmation</string>
+    <string name="sign_out_message">Do you wish to sign out?</string>
+    <string name="sign_out_accept">Sign Out</string>
+    <string name="sign_out_decline">Cancel</string>
+</resources>
