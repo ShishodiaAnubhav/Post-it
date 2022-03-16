@@ -3,11 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/drawable/button_shape.xml" value="0.264" />
         <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/drawable/edittext_round_shape.xml" value="0.28615384615384615" />
+        <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/drawable/edittext_shape.xml" value="0.1638888888888889" />
+        <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/drawable/ic_baseline_account_circle_24.xml" value="0.14351851851851852" />
         <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/layout/activity_create_post.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/layout/activity_main.xml" value="0.27447916666666666" />
-        <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/layout/activity_sign_in.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/layout/activity_sign_in.xml" value="0.264" />
+        <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/layout/activity_sign_up.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/layout/item_post.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/menu/log_in_bar.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/menu/sign_up_bar.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/shish/AndroidStudioProjects/PostIt/app/src/main/res/menu/top_app_bar.xml" value="0.27447916666666666" />
       </map>
     </option>

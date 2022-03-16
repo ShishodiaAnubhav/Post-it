@@ -5,8 +5,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.Toast
 import com.example.android.postit.daos.UserDao
 import com.example.android.postit.models.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -34,7 +40,9 @@ class SignInActivity : AppCompatActivity() {
 
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
-    private var currentUser :FirebaseUser? = null
+    private var hasName = true
+    private var hasImg = true
+    private lateinit var userName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +60,68 @@ class SignInActivity : AppCompatActivity() {
         findViewById<SignInButton>(R.id.signInButton).setOnClickListener {
             signIn()
         }
+
+        findViewById<Button>(R.id.login).setOnClickListener {
+            logIn()
+        }
     }
+
+
+    @DelicateCoroutinesApi
+    private fun logIn(){
+        val email = findViewById<EditText>(R.id.email_address)
+        val password = findViewById<EditText>(R.id.password)
+
+        val emailAddress = email.text.toString()
+        val passwordLogIn=password.text.toString()
+
+        if(emailAddress.isEmpty()){
+            Toast.makeText(this,"enter Email Address", Toast.LENGTH_SHORT).show()
+        }
+        else if(passwordLogIn.isEmpty()){
+            Toast.makeText(this,"enter Password ", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            auth.signInWithEmailAndPassword(emailAddress.trim(),passwordLogIn).addOnCompleteListener(this){
+                    task ->
+                if(task.isSuccessful){
+                    val currentUser = auth.currentUser
+                    updateUI(currentUser)
+                }
+                else{
+                    Toast.makeText(this,"check your email and password", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    }
+
 
     override fun onStart() {
         super.onStart()
-        currentUser = auth.currentUser
-        if(currentUser != null){
-            updateUI(currentUser)
+        val currentUser = auth.currentUser
+        updateUI(currentUser)
+    }
+
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.log_in_bar, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.signUpButton -> {
+                val intent = Intent(this, SignUpActivity::class.java)
+                startActivity(intent)
+                finish()
+
+                return true
+            }
         }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun signIn() {
@@ -94,6 +156,9 @@ class SignInActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         findViewById<SignInButton>(R.id.signInButton).visibility = View.GONE
+        findViewById<EditText>(R.id.email_address).visibility = View.GONE
+        findViewById<EditText>(R.id.password).visibility = View.GONE
+        findViewById<Button>(R.id.login).visibility = View.GONE
         findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
 
         GlobalScope.launch(Dispatchers.IO){
@@ -107,9 +172,19 @@ class SignInActivity : AppCompatActivity() {
     }
 
     @DelicateCoroutinesApi
-    private fun updateUI(firebaseUser: FirebaseUser?) {
+    fun updateUI(firebaseUser: FirebaseUser?) {
         if(firebaseUser != null) {
-            val user = User(firebaseUser.uid, firebaseUser.displayName.toString(), firebaseUser.photoUrl.toString())
+            var name = firebaseUser.displayName
+            var imageUrl = firebaseUser.photoUrl.toString()
+
+            if(!hasName){
+                name = userName
+            }
+            if (!hasImg){
+                imageUrl = "https://firebasestorage.googleapis.com/v0/b/postit-2ea84.appspot.com/o/account_circle.png?alt=media&token=86fc2db5-b1a7-4646-8b21-374f163c9a88"
+            }
+
+            val user = User(firebaseUser.uid, name, imageUrl)
             val userDao = UserDao()
             userDao.addUser(user)
 
@@ -122,11 +197,23 @@ class SignInActivity : AppCompatActivity() {
             findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
         }
     }
-
-    fun signOut(){
-        auth = Firebase.auth
-        auth.signOut()
-    }
-
+//
+//    @DelicateCoroutinesApi
+//    fun updateSignUpUI(firebaseUser: FirebaseUser?, username: String) {
+//        if(firebaseUser != null) {
+//            val imageUrl = "https://firebasestorage.googleapis.com/v0/b/postit-2ea84.appspot.com/o/account_circle.png?alt=media&token=86fc2db5-b1a7-4646-8b21-374f163c9a88"
+//            val user = User(firebaseUser.uid, username, imageUrl)
+//            val userDao = UserDao()
+//            userDao.addUser(user)
+//
+//
+//            val mainActivityIntent = Intent(this, MainActivity::class.java)
+//            startActivity(mainActivityIntent)
+//            finish()
+//        } else {
+//            findViewById<SignInButton>(R.id.signInButton).visibility = View.VISIBLE
+//            findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
+//        }
+//    }
 
 }

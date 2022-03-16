@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.postit.daos.PostDao
@@ -37,6 +36,24 @@ class MainActivity : AppCompatActivity(), IPostAdapter {
 
     }
 
+    private fun setUpRecyclerView() {
+        postDao = PostDao()
+        val postCollections = postDao.postCollections
+        val query = postCollections.orderBy("createdAt", Query.Direction.DESCENDING)
+        val recyclerViewOptions = FirestoreRecyclerOptions.Builder<Post>().setQuery(query, Post::class.java).build()
+
+        adapter = PostAdapter(recyclerViewOptions, this)
+
+        val mRecyclerView: RecyclerView = findViewById(R.id.recyclerView)
+        mRecyclerView.adapter = adapter
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        adapter.startListening()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.top_app_bar, menu)
@@ -54,19 +71,11 @@ class MainActivity : AppCompatActivity(), IPostAdapter {
 
                 }
                 .setPositiveButton(resources.getString(R.string.sign_out_accept)){ _, _ ->
-                    
-                    val signInActivity= SignInActivity()
-                    signInActivity.signOut()
-                    val auth = Firebase.auth
 
-                    val user = auth.currentUser
-                    if(user == null){
-                        val intent = Intent(this, SignInActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    } else {
-                        Toast.makeText(this, "Sign Out Failed", Toast.LENGTH_LONG).show()
-                    }
+                    Firebase.auth.signOut()
+                    val intent = Intent(this, SignInActivity::class.java)
+                    startActivity(intent)
+                    finish()
 
                 }.show()
 
@@ -74,24 +83,6 @@ class MainActivity : AppCompatActivity(), IPostAdapter {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun setUpRecyclerView() {
-        postDao = PostDao()
-        val postCollections = postDao.postCollections
-        val query = postCollections.orderBy("createdAt", Query.Direction.DESCENDING)
-        val recyclerViewOptions = FirestoreRecyclerOptions.Builder<Post>().setQuery(query, Post::class.java).build()
-
-        adapter = PostAdapter(recyclerViewOptions, this)
-
-        val mRecyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        mRecyclerView.adapter = adapter
-        mRecyclerView.layoutManager = LinearLayoutManager(this)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        adapter.startListening()
     }
 
     override fun onStop() {

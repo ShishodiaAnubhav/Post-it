@@ -30,7 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/post"
-        android:elevation = "@dimen/cardview_default_elevation"
+        android:background="@drawable/edittext_round_shape"
         android:textColor="@color/black"
         android:layout_margin="12dp"/>
 
